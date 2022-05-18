@@ -37,6 +37,7 @@ node {
             }
         }
         
+		
 	    stage('Build Docker Image') {
 	      // build docker image
 	      dockerImage = docker.build("devopsexample:${env.BUILD_NUMBER}")
