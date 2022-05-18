@@ -1,8 +1,9 @@
 FROM openjdk:11
-COPY target/API-Gateway-0.0.1-SNAPSHOT.jar API-Gateway.jar
+COPY target/*.jar cards-gateway.jar
 RUN echo "America/Fortaleza" > /etc/timezone
-ENTRYPOINT ["java", "-DLOCAL_IP=192.168.1.7", "-jar","/API-Gateway.jar"]
+#ENTRYPOINT ["java", "-jar","/cards-gateway.jar"]
+ENTRYPOINT ["java", "-DLOCAL_IP=192.168.1.7", "-jar","/cards-gateway.jar"]
 
-#docker build --tag=yugioh-apigateway:latest . <- dont forget the dot
-#docker run --name yugioh-apigateway  -p8082:8082 yugioh-apigateway:latest
+#docker build --tag=cards-gateway:latest . <- dont forget the dot
+#docker run --name cards-gateway -e "SPRING_PROFILES_ACTIVE=prod"  -p8083:8083 cards-gateway:latest
 #mvn -DLOCAL_IP=192.168.1.7 clean package
