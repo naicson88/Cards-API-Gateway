@@ -23,19 +23,6 @@ node {
 	      // build project via maven
 	      sh "'${mvnHome}/bin/mvn' clean install"
 	    }
-
-		stage('Sonar scan execution') {
-            // Run the sonar scan
-            steps {
-                script {
-                    def mvnHome = tool 'Maven 3.5.2'
-                    withSonarQubeEnv {
-
-                        sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
-                    }
-                }
-            }
-        }
         
 	    stage('Build Docker Image') {
 	      // build docker image
