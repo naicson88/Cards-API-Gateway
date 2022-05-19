@@ -31,13 +31,10 @@ node {
 		    }
 		  
 	   }
-	    stage('Sonar scan result check') {
-		  steps{
-		  	timeout(time: 2, unit: 'MINUTES') {
-			  waitFotQualityGate abortPipeline: true
-				
-			     }
-			 }     
+	    stage('Sonar scan result check') {		  
+		timeout(time: 2, unit: 'MINUTES') {
+		  waitFotQualityGate abortPipeline: true
+		 }			      
 	   }
 
 	    stage('Build Docker Image') {
