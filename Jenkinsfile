@@ -26,31 +26,12 @@ node {
         		
 	    stage('Sonar scan execution') {
 		    // Run the sonar scan
-		    steps {
-			script {
-
-			    withSonarQubeEnv(installationName: 'local-sonar') {
-
-				sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
-			    }
-			}
+		    withSonarQubeEnv(installationName: 'local-sonar') {
+			sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
 		    }
+		  
 	   }
-	// waiting for sonar results based into the configured web hook in Sonar server which push the status back to jenkins
-	 stage('Sonar scan result check') {
-	    steps {
-		timeout(time: 2, unit: 'MINUTES') {
-		    retry(3) {
-			script {
-			    def qg = waitForQualityGate()
-			    if (qg.status != 'OK') {
-				error "Pipeline aborted due to quality gate failure: ${qg.status}"
-			     }
-			 }
-		     }
-		 }
-	     }
-	 }
+
 
 	    stage('Build Docker Image') {
 	      // build docker image
