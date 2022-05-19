@@ -25,17 +25,25 @@ node {
 	    }
         		
 	    stage('Sonar scan execution') {
-		    // Run the sonar scan
+		    // Run the sonar scan 'local-sonar' is defined as variable in jenkins config
 		    withSonarQubeEnv(installationName: 'local-sonar') {
 			sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
 		    }
 		  
 	   }
-	    stage('Sonar scan result check') {		  
+	   stage("Sonar scan result check"){
+	      timeout(time: 1, unit: 'MINUTES') {
+		  def qg = waitForQualityGate()
+		  if (qg.status != 'OK') {
+		      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+		  }
+	      }
+		   
+	   /* stage('Sonar scan result check') {		  
 		timeout(time: 2, unit: 'MINUTES') {
 		  waitFotQualityGate abortPipeline: true
 		 }			      
-	   }
+	   }*/
 
 	    stage('Build Docker Image') {
 	      // build docker image
