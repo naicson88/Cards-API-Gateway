@@ -29,7 +29,7 @@ node {
 		    steps {
 			script {
 
-			    withSonarQubeEnv {
+			    withSonarQubeEnv(installationName: 'local-sonar') {
 
 				sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
 			    }
