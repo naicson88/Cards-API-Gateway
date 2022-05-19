@@ -31,17 +31,13 @@ node {
 		    }
 		  
 	   }
-	  stage('Sonar scan result check') {	    
-		timeout(time: 2, unit: 'MINUTES') {
-		    retry(3) {
-			script {
-			    def qg = waitForQualityGate()
-			    if (qg.status != 'OK') {
-				error "Pipeline aborted due to quality gate failure: ${qg.status}"
+	    stage('Sonar scan result check') {
+		  steps{
+		  	timeout(time: 2, unit: 'MINUTES') {
+			  waitFotQualityGate abortPipeline: true
+				
 			     }
-			 }
-		     }
-		 }     
+			 }     
 	   }
 
 	    stage('Build Docker Image') {
