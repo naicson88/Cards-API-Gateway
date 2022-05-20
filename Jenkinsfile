@@ -39,33 +39,5 @@ node {
 		         }
 	           }
               } 
-		   
-	   /* stage('Sonar scan result check') {		  
-		timeout(time: 2, unit: 'MINUTES') {
-		  waitFotQualityGate abortPipeline: true
-		 }			      
-	   }*/
 
-	    stage('Build Docker Image') {
-	      // build docker image
-	      dockerImage = docker.build("devopsexample:${env.BUILD_NUMBER}")
-	    }
-	    stage('Deploy Docker Image'){
-
-	      // deploy docker image to nexus
-
-	      echo "Docker Image Tag Name: ${dockerImageTag}"
-
-		  sh "docker stop devopsexample"
-
-		  sh "docker rm devopsexample"
-
-		  sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
-
-		  // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-	      //    dockerImage.push("${env.BUILD_NUMBER}")
-	      //      dockerImage.push("latest")
-	      //  }
-
-	    }
 	}A
