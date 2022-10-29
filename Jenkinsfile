@@ -31,6 +31,7 @@ node {
 		    }
 		  
 	   }
+	  // If not work, check Webhook setted in SonarQube: Menu Administration->Configurations->Webhooks
 	   stage("Sonar scan result check"){
 	      timeout(time: 2, unit: 'MINUTES') {
 		  def qg = waitForQualityGate()
