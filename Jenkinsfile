@@ -15,7 +15,7 @@ pipeline {
        steps{  
           script{
              echo 'Pulling...'
-            
+             sh "'${mvnHome}/bin/mvn' clean install"
           }
        }      
      }
