@@ -34,6 +34,7 @@ node {
 	   stage("Sonar scan result check"){
 	      timeout(time: 1, unit: 'MINUTES') {
 		  def qg = waitForQualityGate()
+		  println qg.status
 		  if (qg.status != 'OK') {
 		      error "Pipeline aborted due to quality gate failure: ${qg.status}"
 		         }
