@@ -1,6 +1,6 @@
 pipeline {  
    environment {
-     mvnHome = tool 'Maven 3.5.2'
+     mvnHome = tool 'maven-3.5.2'
    }
 
    agent any  
