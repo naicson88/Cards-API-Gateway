@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     tools {
-        maven "3.5.2" // You need to add a maven with name "3.6.0" in the Global Tools Configuration page
+        maven "maven-3.5.2" // You need to add a maven with name "3.6.0" in the Global Tools Configuration page
     }
 
     stages {
