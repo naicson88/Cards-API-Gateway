@@ -10,7 +10,7 @@ pipeline {
      stage("Build") {
        steps{  
           script{
-            def mvnHome = tool 'maven-3.5.2'
+             echo 'Pulling...'
             
           }
        }      
