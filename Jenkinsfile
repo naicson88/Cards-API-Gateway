@@ -13,11 +13,12 @@ pipeline {
 			  git 'https://github.com/naicson88/Cards-API-Gateway.git'
 		    }
 		}
+		stage("Build Project") {
+		    steps {
+			  sh "mvn -version"
+               		  sh "mvn clean install"
+		    }
+		}
 	    }
 
-    post {
-        always {
-            cleanWs()
-        }
-    }
 }
