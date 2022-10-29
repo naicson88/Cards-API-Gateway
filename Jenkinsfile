@@ -1,27 +1,50 @@
 node {
-    // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
-    def server = Artifactory.server "SERVER_ID"
-    // Create an Artifactory Maven instance.
-    def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo
+	    // reference to maven
+	    // ** NOTE: This 'maven-3.5.2' Maven tool must be configured in the Jenkins Global Configuration.   
+	    def mvnHome = tool 'maven-3.5.2'
+	
 
-    stage('Clone sources') {
-        git url: 'https://github.com/jfrogdev/project-examples.git'
-    }
-
-    stage('Artifactory configuration') {
-        // Tool name from Jenkins configuration
-        rtMaven.tool = "Maven-3.3.9"
-        // Set Artifactory repositories for dependencies resolution and artifacts deployment.
-        rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
-        rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-    }
-
-    stage('Maven build') {
-        buildInfo = rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install'
-    }
-
-    stage('Publish build info') {
-        server.publishBuildInfo buildInfo
-    }
-}
+	    // holds reference to docker image
+	    def dockerImage
+	    // ip address of the docker private repository(nexus)
+	 
+	    def dockerImageTag = "devopsexample${env.BUILD_NUMBER}"
+	    
+	    stage('Clone Repo') { // for display purposes
+	      // Get some code from a GitHub repository
+	      git 'https://github.com/felipemeriga/DevOps-Example.git'
+	      // Get the Maven tool.
+	      // ** NOTE: This 'maven-3.5.2' Maven tool must be configured
+	      // **       in the global configuration.           
+	      mvnHome = tool 'maven-3.5.2'
+	    }    
+	  
+	    stage('Build Project') {
+	      // build project via maven
+	      sh "'${mvnHome}/bin/mvn' clean install"
+	    }
+			
+	    stage('Build Docker Image') {
+	      // build docker image
+	      dockerImage = docker.build("devopsexample:${env.BUILD_NUMBER}")
+	    }
+	   
+	    stage('Deploy Docker Image'){
+	      
+	      // deploy docker image to nexus
+			
+	      echo "Docker Image Tag Name: ${dockerImageTag}"
+		  
+		  sh "docker stop devopsexample"
+		  
+		  sh "docker rm devopsexample"
+		  
+		  sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
+		  
+		  // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+	      //    dockerImage.push("${env.BUILD_NUMBER}")
+	      //      dockerImage.push("latest")
+	      //  }
+	      
+	    }
+	}A
