@@ -19,5 +19,14 @@ pipeline {
           }
        }      
      }
+      
+     stage('Sonar scan execution') {
+			 // Run the sonar scan 'local-sonar' is defined as variable in jenkins config
+			  steps {       
+					 withSonarQubeEnv(installationName: 'local-sonar') {
+					sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
+					}
+			  } 		  
+	   }
    } 
  }
