@@ -11,7 +11,7 @@ pipeline {
        steps{  
           script{
             def mvnHome = tool 'maven-3.5.2'
-            sh "'${mvnHome}/bin/mvn' clean install"
+            
           }
        }      
      }
