@@ -4,7 +4,7 @@ pipeline {
     dockerImageTag = "cards_gateway${env.BUILD_NUMBER}"
     dockerImage = ''
   }
- 
+
   agent any
 
   stages {
@@ -30,7 +30,7 @@ pipeline {
         }
       }
     }
-      // If not work, check Webhook setted in SonarQube: Menu Administration->Configurations->Webhooks
+    // If not work, check Webhook setted in SonarQube: Menu Administration->Configurations->Webhooks
     stage("Sonar scan result check") {
       steps {
         script {
@@ -43,12 +43,14 @@ pipeline {
         }
       }
     }
-    
-     stage('Build Docker Image') {
-			steps{
-				 // build docker image
-	     		 dockerImage = docker.build("cards_gateway:${env.BUILD_NUMBER}")
-			}  
-	   }
+
+    stage('Build Docker Image') {
+      steps {
+        script {
+          // build docker image
+          dockerImage = docker.build("cards_gateway:${env.BUILD_NUMBER}")
+        }
+      }
+    }
   }
 }
