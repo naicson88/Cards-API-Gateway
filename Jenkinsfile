@@ -8,7 +8,7 @@ pipeline {
   agent any
   options {
     skipDefaultCheckout(true)
-   }
+  }
   stages {
     stage("Clone Repository") {
       steps {
@@ -54,5 +54,26 @@ pipeline {
         }
       }
     }
+    stage('Deploy Docker Image') {
+      steps {
+
+        // deploy docker image to nexus
+
+        echo "Docker Image Tag Name: ${dockerImageTag}"
+
+        sh "docker stop cards_gateway"
+
+        sh "docker rm cards_gateway"
+
+        sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
+
+        // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+        //    dockerImage.push("${env.BUILD_NUMBER}")
+        //      dockerImage.push("latest")
+        //  }
+      }
+
+    }
+
   }
 }
