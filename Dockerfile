@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:11-jdk-alpine
 COPY target/*.jar cards-gateway.jar
 RUN echo "America/Fortaleza" > /etc/timezone
 #ENTRYPOINT ["java", "-jar","/cards-gateway.jar"]

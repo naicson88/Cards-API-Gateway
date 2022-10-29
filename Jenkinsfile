@@ -1,3 +1,4 @@
+
 node {
 	    // reference to maven
 	    // ** NOTE: This 'maven-3.5.2' Maven tool must be configured in the Jenkins Global Configuration.   
@@ -8,7 +9,7 @@ node {
 	    def dockerImage
 	    // ip address of the docker private repository(nexus)
 	 
-	    def dockerImageTag = "devopsexample${env.BUILD_NUMBER}"
+	    def dockerImageTag = "cards_gateway${env.BUILD_NUMBER}"
 	    
 	    stage('Clone Repo') { // for display purposes
 	      // Get some code from a GitHub repository
@@ -23,51 +24,40 @@ node {
 	      // build project via maven
 	      sh "'${mvnHome}/bin/mvn' clean install"
 	    }
-        
-		
-	    stage('Build Docker Image') {
-	      // build docker image
-	      dockerImage = docker.build("devopsexample:${env.BUILD_NUMBER}")
-	    }
-		
-	   	stage('Sonar scan execution') {
-            // Run the sonar scan
-            steps {
-                script {
-                    def mvnHome = tool 'Maven 3.5.2'
-                    withSonarQubeEnv {
+        		
+	    stage('Sonar scan execution') {
+		    // Run the sonar scan 'local-sonar' is defined as variable in jenkins config
+		    withSonarQubeEnv(installationName: 'local-sonar') {
+			sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
+		    }
+		  
+	   }
+	  // If not work, check Webhook setted in SonarQube: Menu Administration->Configurations->Webhooks
+	   stage("Sonar scan result check"){
+	      timeout(time: 2, unit: 'MINUTES') {
+		  def qg = waitForQualityGate()
+		  if (qg.status != 'OK') {
+		      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+		         }
+	           }
+        } 
 
-                        sh "'${mvnHome}/bin/mvn'  verify sonar:sonar -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
-                    }
-                }
-            }
-        }
-        // waiting for sonar results based into the configured web hook in Sonar server which push the status back to jenkins
-        stage('Sonar scan result check') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    retry(3) {
-                        script {
-                            def qg = waitForQualityGate()
-                            if (qg.status != 'OK') {
-                                error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-	    stage('Deploy Docker Image'){
+        stage('Build Docker Image') {
+	      // build docker image
+	      dockerImage = docker.build("cards_gateway:${env.BUILD_NUMBER}")
+	    }
+
+         stage('Deploy Docker Image'){
 	      
 	      // deploy docker image to nexus
 			
 	      echo "Docker Image Tag Name: ${dockerImageTag}"
 		  
-		  sh "docker stop devopsexample"
+		  sh "docker stop cards_gateway"
 		  
-		  sh "docker rm devopsexample"
+		  sh "docker rm cards_gateway"
 		  
-		  sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
+		  sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
 		  
 		  // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
 	      //    dockerImage.push("${env.BUILD_NUMBER}")
@@ -75,4 +65,6 @@ node {
 	      //  }
 	      
 	    }
-	}A
+
+	}
+
