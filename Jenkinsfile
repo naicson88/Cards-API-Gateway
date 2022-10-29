@@ -2,7 +2,7 @@ pipeline {
   environment {
     mvnHome = tool 'maven-3.5.2'
     dockerImageTag = "cards_gateway${env.BUILD_NUMBER}"
-    dockerImage
+    dockerImage = ''
   }
  
   agent any
