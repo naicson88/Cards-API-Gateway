@@ -28,14 +28,15 @@ pipeline {
         }
       }
     }
-
     // If not work, check Webhook setted in SonarQube: Menu Administration->Configurations->Webhooks
     stage("Sonar scan result check") {
       steps {
-        timeout(time: 2, unit: 'MINUTES') {
-          def qg = waitForQualityGate()
-          if (qg.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        script {
+          timeout(time: 2, unit: 'MINUTES') {
+            def qg = waitForQualityGate()
+            if (qg.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            }
           }
         }
       }
