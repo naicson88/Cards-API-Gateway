@@ -32,7 +32,7 @@ node {
 		  
 	   }
 	   stage("Sonar scan result check"){
-	      timeout(time: 1, unit: 'MINUTES') {
+	      timeout(time: 2, unit: 'MINUTES') {
 		  def qg = waitForQualityGate()
 		  println qg.status
 		  if (qg.status != 'OK') {
