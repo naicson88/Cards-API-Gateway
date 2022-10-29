@@ -2,6 +2,7 @@ pipeline {
   environment {
     mvnHome = tool 'maven-3.5.2'
     dockerImageTag = "cards_gateway${env.BUILD_NUMBER}"
+    dockerImage
   }
  
   agent any
@@ -42,5 +43,12 @@ pipeline {
         }
       }
     }
+    
+     stage('Build Docker Image') {
+			steps{
+				 // build docker image
+	     		 dockerImage = docker.build("cards_gateway:${env.BUILD_NUMBER}")
+			}  
+	   }
   }
 }
