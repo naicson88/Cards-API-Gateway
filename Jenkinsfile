@@ -1,28 +1,23 @@
+
 pipeline {
     agent any
-    triggers {
-        pollSCM '* * * * *'
+
+    tools {
+        maven "3.5.2" // You need to add a maven with name "3.6.0" in the Global Tools Configuration page
     }
+
     stages {
-        stage('Build') {
+        stage("Build") {
             steps {
-                sh 'gradle assemble'
+                sh "mvn -version"
+                sh "mvn clean install"
             }
         }
-         stage('Test') {
-            steps {
-                sh 'gradle test'
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                sh 'gradle docker'
-            }
-        }
-        stage('Run Docker Image') {
-            steps {
-                sh 'gradle dockerRun'
-            }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
