@@ -61,9 +61,9 @@ pipeline {
 
         echo "Docker Image Tag Name: ${dockerImageTag}"
 
-//         sh "docker stop cards_gateway"
+        //         sh "docker stop cards_gateway"
 
-//         sh "docker rm cards_gateway"
+        //         sh "docker rm cards_gateway"
 
         sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
 
@@ -76,8 +76,6 @@ pipeline {
     }
 
   }
-<<<<<<< HEAD
 }
-=======
+
 }
->>>>>>> 65e4da0e0b3d268a48eeda998a35b3907b14c47a
