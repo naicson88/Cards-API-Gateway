@@ -56,24 +56,25 @@ pipeline {
     }
     stage('Deploy Docker Image') {
       steps {
+        script {
 
-        // deploy docker image to nexus
+          // deploy docker image to nexus
 
-        echo "Docker Image Tag Name: ${dockerImageTag}"
-        
-        if [ $( docker ps -a -f name=cards_gateway | wc -l ) -eq 2 ]; then
-		  sh "docker stop cards_gateway"
-		  sh "docker rm cards_gateway"
-		else
-		   sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
-		fi
-		
-		 sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
+          echo "Docker Image Tag Name: ${dockerImageTag}"
 
-        // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-        //    dockerImage.push("${env.BUILD_NUMBER}")
-        //      dockerImage.push("latest")
-        //  }
+          def inspectExitCode = sh script: "docker service inspect cards_gateway", returnStatus: true
+          if (inspectExitCode == 0) {
+            sh "docker stop cards_gateway"
+            sh "docker rm cards_gateway"
+          }
+
+          sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
+
+          // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+          //    dockerImage.push("${env.BUILD_NUMBER}")
+          //      dockerImage.push("latest")
+          //  }
+        }
       }
 
     }
