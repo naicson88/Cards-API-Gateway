@@ -63,8 +63,9 @@ pipeline {
           echo "Docker Image Tag Name: ${dockerImageTag}"
 
           def inspectExitCode = sh script: "docker service inspect cards_gateway", returnStatus: true
-          echo inspectExitCode
+
           if (inspectExitCode == 0) {
+          	echo "Removing Container..."
             sh "docker stop cards_gateway"
             sh "docker rm cards_gateway"
           }
