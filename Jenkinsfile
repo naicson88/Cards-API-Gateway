@@ -60,12 +60,15 @@ pipeline {
         // deploy docker image to nexus
 
         echo "Docker Image Tag Name: ${dockerImageTag}"
-
-        sh "docker top cards_gateway || docker stop cards_gateway"
-
-        sh "docker top cards_gateway || docker rm cards_gateway"
-
-        sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
+        
+        if [ $( docker ps -a -f name=cards_gateway | wc -l ) -eq 2 ]; then
+		  sh "docker stop cards_gateway"
+		  sh "docker rm cards_gateway"
+		else
+		   sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
+		fi
+		
+		 sh "docker run --name cards_gateway -d -p 2222:2222 cards_gateway:${env.BUILD_NUMBER}"
 
         // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
         //    dockerImage.push("${env.BUILD_NUMBER}")
