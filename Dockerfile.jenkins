@@ -20,5 +20,7 @@ RUN chmod 777 /var/run/docker.sock
 
 #docker container run --name jenkins-blue -d -p 49000:8080 -p 50000:50000 -u 0 -v jenkins_home:/var/jenkins_home jenkins:2.332.3
 
-
+#docker exec -u 0 -it mycontainer bash
+#usermod -a -G root jenkins
+#chmod 777 /var/run/docker.sock 
 
